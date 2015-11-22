@@ -42,7 +42,7 @@ namespace DynamicAssmsBuilder
 
             var assembly = AppDomain.CurrentDomain.DefineDynamicAssembly(new System.Reflection.AssemblyName(assemblyName), System.Reflection.Emit.AssemblyBuilderAccess.RunAndSave);
             var module = assembly.DefineDynamicModule(assemblyName + "Module", filename);
-            var constructors = defineInitializator(module);
+            var constructors = defineInitializer(module);
             foreach (var constructor in classes)
             {
                 var type = module.DefineType(constructor.Key, System.Reflection.TypeAttributes.Class | System.Reflection.TypeAttributes.Public, typeof(DynamicRuntime.DynamicClass));
@@ -173,11 +173,11 @@ namespace DynamicAssmsBuilder
             return assembly;
         }
 
-        private Dictionary<string, FieldInfo> defineInitializator(System.Reflection.Emit.ModuleBuilder module)
+        private Dictionary<string, FieldInfo> defineInitializer(System.Reflection.Emit.ModuleBuilder module)
         {
             var constructors = new Dictionary<string, FieldInfo>();
 
-            var type = module.DefineType("<>Initializator", TypeAttributes.Abstract | TypeAttributes.Sealed);
+            var type = module.DefineType("<>Initializer", TypeAttributes.Abstract | TypeAttributes.Sealed);
             foreach (var jstype in classes)
                 constructors[jstype.Key] = type.DefineField("_" + jstype.Key, typeof(Function), FieldAttributes.Static | FieldAttributes.Assembly);
 
